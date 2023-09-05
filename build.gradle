@@ -1,0 +1,61 @@
+apply plugin: 'java'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+group 'org.voxflow'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+
+    implementation 'org.glassfish.tyrus.bundles:tyrus-standalone-client:1.17'
+
+    // Jackson for JSON processing
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    implementation group: 'com.amazonaws', name: 'amazon-kinesis-video-streams-parser-library', version: '1.2.1'
+    implementation(
+           'org.glassfish.tyrus.bundles:tyrus-standalone-client:1.17',
+            'software.amazon.awssdk:transcribestreaming:2.16.30',
+            'com.fasterxml.jackson.core:jackson-core:2.12.3',
+            'com.fasterxml.jackson.core:jackson-databind:2.12.3',
+            'com.amazonaws:aws-java-sdk-dynamodb:1.11.987',
+            'com.amazonaws:aws-java-sdk-kinesisvideo:1.11.987',
+            'com.amazonaws:aws-lambda-java-core:1.2.1',
+            'com.amazonaws:aws-lambda-java-events:3.8.0',
+            'com.amazonaws:aws-java-sdk-cloudwatch:1.11.987',
+            'org.slf4j:slf4j-api:1.7.32',
+            'org.slf4j:slf4j-log4j12:1.7.32',
+
+            // need this for our async clients
+            'software.amazon.awssdk:netty-nio-client:2.16.30',
+
+            // need this for logging
+            'org.apache.commons:commons-lang3:3.6'
+    )
+    compileOnly("org.projectlombok:lombok:+")
+    runtimeOnly 'com.amazonaws:aws-lambda-java-log4j2:1.5.1'
+}
+
+tasks.register('packageDistribution',Zip){
+    from compileJava
+    from processResources
+    into('lib') {
+        from configurations.compileClasspath
+    }
+    archiveFileName = "voxflow.zip"
+    destinationDirectory = layout.buildDirectory.dir('dist')
+}
+
+test {
+    useJUnitPlatform()
+}
