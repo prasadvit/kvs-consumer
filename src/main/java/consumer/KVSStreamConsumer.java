@@ -88,7 +88,6 @@ public class KVSStreamConsumer  implements RequestHandler<AsrRequest, AsrRespons
                 logger.info("mh2.getData()" +mh2.getData().length());
                 ts.writeToDynamoDB(mh.getData().toString());
                 ts.writeToDynamoDB(mh2.getData().toString());
-                ts.
                 logger.info("DB write success");
         } catch (Exception e) {
                 e.printStackTrace();
